@@ -4,9 +4,10 @@
 ## v 0.9                   ##
 #############################
 
+import tkinter
 import customtkinter
 from idlelib.tooltip import Hovertip
-#from tkinter import messagebox
+from tkinter import messagebox
 
 root = customtkinter.CTk()
 root.title("Klystron Interpolation")
@@ -25,6 +26,7 @@ def interp():
     freqy = []
     freqz = freqX.get()
     cavityinterp = []
+    numcheck = False
 
     freqx.append(freqL.get())
     freqy.append(freqU.get())
@@ -42,25 +44,51 @@ def interp():
     freqy.append(cavityU5.get())
     freqy.append(cavityU6.get())
 
-    print(freqx, freqy, freqz)
+    for i in range(0, len(freqx)):
+        try:
+            freqx[i] = int(freqx[i])
+            numcheck = True
+        except:
+            numcheck = False
+            tkinter.messagebox.showerror(title="Klystron Interpolation",
+                                         message="Error. A frequency or cavity box contains an invalid value.")
+            return
+    for i in range(0, len(freqy)):
+        try:
+            freqy[i] = int(freqy[i])
+            numcheck = True
+        except:
+            numcheck = False
+            tkinter.messagebox.showerror(title="Klystron Interpolation",
+                                         message="Error. A frequency or cavity box contains an invalid value.")
+            return
+    try:
+        freqz = int(freqz)
+        numcheck = True
+    except:
+        numcheck = False
+        tkinter.messagebox.showerror(title="Klystron Interpolation",
+                                     message="Error. Site frequency box contains an invalid value.")
+        return
 
-    for i in range(1,7):
-        p1 = (int(freqy[i]) - int(freqx[i]))
-        p2 = (int(freqy[0]) - int(freqx[0]))
-        p3 = (int(freqz) - int(freqx[0]))
-        p4 = (p1/p2)*p3
-        interp = (int(freqx[i])+p4)
-        cavityinterp.append(round(interp, 1))
+    if numcheck:
+        for i in range(1,7):
+            p1 = ((freqy[i]) - (freqx[i]))
+            p2 = ((freqy[0]) - (freqx[0]))
+            p3 = ((freqz) - (freqx[0]))
+            p4 = (p1/p2)*p3
+            interp = ((freqx[i])+p4)
+            cavityinterp.append(round(interp, 1))
 
-    print(cavityinterp)
-        #print(interp)
-
-    cavityX1.configure(placeholder_text=cavityinterp[0])
-    cavityX2.configure(placeholder_text=cavityinterp[1])
-    cavityX3.configure(placeholder_text=cavityinterp[2])
-    cavityX4.configure(placeholder_text=cavityinterp[3])
-    cavityX5.configure(placeholder_text=cavityinterp[4])
-    cavityX6.configure(placeholder_text=cavityinterp[5])
+    try:
+        cavityX1.configure(placeholder_text=cavityinterp[0])
+        cavityX2.configure(placeholder_text=cavityinterp[1])
+        cavityX3.configure(placeholder_text=cavityinterp[2])
+        cavityX4.configure(placeholder_text=cavityinterp[3])
+        cavityX5.configure(placeholder_text=cavityinterp[4])
+        cavityX6.configure(placeholder_text=cavityinterp[5])
+    except:
+        pass
 
 copydate = "© 2022"
 version = "v 1.1.0"
